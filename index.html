@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="description" content="Gestão de serviços e financeiro da O Bigode Funileiro">
+<link rel="manifest" href="manifest.webmanifest">
+<title>O Bigode Funileiro | Gestão</title>
+<style>
+:root{--bg:#101010;--panel:#1b1b1b;--panel2:#242424;--gold:#d5a642;--gold2:#f1d18a;--text:#f5f5f5;--muted:#b5b5b5;--green:#67d69a;--red:#ff7777;--line:#3b3323}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#101010,#171717 55%,#211a0d);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:15px}button,input,select,textarea{font:inherit}button{cursor:pointer}
+header{padding:16px 16px 12px;border-bottom:1px solid #3a2e18;background:#111;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px}
+.logo{width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:#222}header h1{font-size:17px;line-height:1.15;margin:0;color:var(--gold2)}header p{margin:4px 0 0;color:#ccc;font-size:12px}
+main{max-width:980px;margin:auto;padding:14px 12px 95px}.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:4px 0 16px}.nav button{background:#202020;color:#eee;border:1px solid #45402f;border-radius:12px;padding:11px 5px;font-size:12px}.nav button.active{background:var(--gold);color:#16120a;font-weight:800;border-color:var(--gold)}
+h2{font-size:20px;margin:8px 0 14px}h3{font-size:15px;margin:0 0 10px;color:var(--gold2)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat,.card{background:linear-gradient(145deg,#202020,#181818);border:1px solid #393329;border-radius:15px;padding:14px;min-width:0}.stat small{display:block;color:var(--muted);font-size:12px}.stat strong{display:block;font-size:22px;margin-top:7px;overflow-wrap:anywhere}.gold{color:var(--gold2)}.green{color:var(--green)}.red{color:var(--red)}.section{margin-top:15px}.muted{color:var(--muted);font-size:13px}.empty{padding:18px;text-align:center;color:var(--muted);border:1px dashed #4a4335;border-radius:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.btn{border:0;border-radius:10px;background:var(--gold);color:#15110a;padding:11px 14px;font-weight:750}.btn.secondary{background:#303030;border:1px solid #51452d;color:#f3e5c4}.btn.danger{background:#4a2020;color:#ffdede;border:1px solid #7b3838}.btn.small{padding:7px 10px;font-size:12px}
+label{display:block;font-size:12px;color:#d3c7ad;margin:10px 0 5px}input,select,textarea{width:100%;border-radius:9px;border:1px solid #4a4438;background:#111;color:#fff;padding:11px;min-height:43px}textarea{min-height:76px;resize:vertical}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}.full{grid-column:1/-1}.item{padding:12px 0;border-bottom:1px solid #39342b}.item:last-child{border-bottom:0}.itemtop{display:flex;justify-content:space-between;gap:10px;align-items:start}.item strong{overflow-wrap:anywhere}.pill{display:inline-block;font-size:11px;border-radius:999px;padding:4px 8px;background:#3b321f;color:var(--gold2);margin-top:6px}.money{white-space:nowrap;font-weight:800}.subactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.hide{display:none!important}.notice{background:#302713;border:1px solid #695022;border-radius:12px;padding:12px;color:#f3dfb4;font-size:12px;line-height:1.45}.search{margin-bottom:10px}.bottom{position:fixed;bottom:0;left:0;right:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#111e;border-top:1px solid #3c321e;backdrop-filter:blur(12px);display:flex;justify-content:center;z-index:6}.bottom button{width:100%;max-width:980px}
+@media(min-width:700px){.nav{grid-template-columns:repeat(6,1fr)}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.stat strong{font-size:24px}}
+@media(max-width:420px){header h1{font-size:15px}.logo{width:50px;height:50px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.stat strong{font-size:19px}}
+
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#101010,#211a0d)}.auth-card{width:100%;max-width:430px;background:#1b1b1b;border:1px solid #695022;border-radius:18px;padding:24px;box-shadow:0 18px 55px #0008}.auth-card h1{color:var(--gold2);margin:0 0 8px}.auth-card p{color:#c7c0b2;font-size:13px;line-height:1.5}.auth-card .btn{width:100%;margin-top:12px}.auth-link{display:block;text-align:center;margin-top:14px;color:var(--gold2);background:none;border:0;text-decoration:underline;width:100%;padding:8px}.auth-error{display:none;margin-top:12px;padding:10px;border:1px solid #7b3838;background:#351c1c;border-radius:10px;color:#ffdede;font-size:13px}.auth-success{display:none;margin-top:12px;padding:10px;border:1px solid #356b4d;background:#173323;border-radius:10px;color:#d6ffe6;font-size:13px}.auth-top{display:flex;align-items:center;gap:12px;margin-bottom:18px}.auth-top img{width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid var(--gold)}
+</style>
+</head>
+<body>
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-top"><img src="assets/logo.jpeg" alt="O Bigode Funileiro"><div><h1>O BIGODE FUNILEIRO</h1><p style="margin:4px 0 0">Acesso do proprietário</p></div></div>
+    <div id="auth-login-panel">
+      <h2 style="font-size:19px;margin:8px 0">Entrar no aplicativo</h2>
+      <form id="auth-login-form"><label for="auth-email">E-mail cadastrado</label><input id="auth-email" type="email" autocomplete="username" required placeholder="seu@email.com"><label for="auth-password">Senha</label><input id="auth-password" type="password" autocomplete="current-password" required placeholder="Digite sua senha"><button class="btn" type="submit">Entrar</button></form>
+      <button type="button" class="auth-link" id="auth-forgot">Esqueci minha senha</button>
+    </div>
+    <div id="auth-reset-panel" class="hide">
+      <h2 style="font-size:19px;margin:8px 0">Recuperar senha</h2><p>Informe o e-mail cadastrado. Enviaremos um link para criar uma nova senha.</p>
+      <form id="auth-reset-form"><label for="auth-reset-email">Seu e-mail</label><input id="auth-reset-email" type="email" autocomplete="email" required placeholder="seu@email.com"><button class="btn" type="submit">Enviar link de recuperação</button></form>
+      <button type="button" class="auth-link" id="auth-back-login">Voltar ao login</button>
+    </div>
+    <div id="auth-error" class="auth-error" role="alert"></div><div id="auth-success" class="auth-success" role="status"></div>
+    <p style="margin-top:18px;font-size:11px">Acesso protegido pelo Firebase Authentication. O usuário do proprietário deve ser cadastrado no Firebase Console.</p>
+  </div>
+</div>
+<div id="app-shell" class="hide">
+<header>
+<img class="logo" src="assets/logo.jpeg" alt="Logotipo O Bigode Funileiro" onerror="this.style.display='none'">
+<div><h1>O BIGODE FUNILEIRO</h1><p>Funilaria e pintura · Gestão da oficina</p></div>
+</header>
+<main>
+<div class="nav" id="nav">
+<button class="active" data-page="inicio">Painel</button><button data-page="servicos">Serviços</button><button data-page="gastos">Gastos</button><button data-page="contas">Contas</button><button data-page="saques">Saques</button><button data-page="relatorios">Relatórios</button><button data-page="backup">Backup</button>
+</div>
+<section id="page-inicio">
+<h2>Painel da oficina</h2>
+<div class="grid">
+<div class="stat"><small>Serviços em andamento</small><strong id="s-andamento">0</strong></div>
+<div class="stat"><small>Receita contratada</small><strong id="s-receita" class="gold">R$ 0,00</strong></div>
+<div class="stat"><small>Despesas lançadas</small><strong id="s-despesas" class="red">R$ 0,00</strong></div>
+<div class="stat"><small>Saques / retiradas</small><strong id="s-saques" class="gold">R$ 0,00</strong></div>
+<div class="stat"><small>Saldo a receber</small><strong id="s-receber" class="green">R$ 0,00</strong></div>
+</div>
+<div class="section card"><h3>Visão financeira</h3><div class="itemtop"><span class="muted">Resultado dos serviços antes dos custos fixos</span><strong id="s-resultado" class="gold">R$ 0,00</strong></div><p class="muted">Estimativa: valores contratados menos gastos diretos registrados. O lucro líquido depende também das despesas operacionais e dos pagamentos efetivamente realizados.</p></div>
+<div class="section card"><h3>Próximos vencimentos</h3><div id="home-vencimentos" class="muted">Nenhuma conta cadastrada.</div></div>
+<div class="section notice">Versão inicial: os dados ficam salvos neste navegador/dispositivo. Use a área <b>Backup</b> para exportar uma cópia regularmente. O acesso agora exige autenticação Firebase. Os dados operacionais continuam salvos localmente neste navegador; ainda não há sincronização na nuvem entre dispositivos.</div>
+</section>
+
+<section id="page-servicos" class="hide">
+<h2>Serviços e veículos</h2>
+<div class="actions"><button class="btn" id="novo-servico">+ Novo serviço</button></div>
+<div id="form-servico" class="card hide">
+<h3 id="servico-form-title">Cadastrar serviço</h3>
+<form id="serviceForm"><input type="hidden" id="service-id">
+<div class="formgrid">
+<div><label>Cliente *</label><input id="cliente" required placeholder="Nome do cliente"></div>
+<div><label>Telefone</label><input id="telefone" inputmode="tel" placeholder="(67) 99999-9999"></div>
+<div><label>Veículo *</label><input id="veiculo" required placeholder="Ex.: Chevrolet Onix"></div>
+<div><label>Placa</label><input id="placa" placeholder="ABC1D23" maxlength="8"></div>
+<div><label>Data de entrada *</label><input id="entrada" type="date" required></div>
+<div><label>Previsão de entrega</label><input id="entrega" type="date"></div>
+<div><label>Valor combinado (R$) *</label><input id="valor" type="number" min="0" step="0.01" required></div>
+<div><label>Status</label><select id="status"><option>Orçamento</option><option>Aguardando aprovação</option><option>Em execução</option><option>Aguardando peças</option><option>Pronto para entrega</option><option>Entregue</option><option>Cancelado</option></select></div>
+<div class="full"><label>Descrição do serviço</label><textarea id="descricao" placeholder="Ex.: reparo de para-choque, preparação e pintura..."></textarea></div>
+</div><div class="actions"><button class="btn" type="submit">Salvar serviço</button><button class="btn secondary" type="button" id="cancelar-servico">Cancelar</button></div></form>
+</div>
+<input class="search" id="busca-servicos" placeholder="Buscar por cliente, veículo ou placa...">
+<div id="lista-servicos"></div>
+</section>
+
+<section id="page-gastos" class="hide">
+<h2>Gastos e despesas</h2>
+<div class="card"><h3>Novo lançamento</h3>
+<form id="expenseForm"><div class="formgrid">
+<div><label>Tipo de gasto *</label><select id="tipo-gasto"><option value="direto">Direto de um serviço</option><option value="operacional">Operacional da oficina</option><option value="saque">Saque / retirada do proprietário</option></select></div>
+<div><label>Serviço relacionado</label><select id="gasto-servico"><option value="">Selecione se aplicável</option></select></div>
+<div><label>Categoria *</label><select id="categoria-gasto"><option>Materiais de pintura</option><option>Peças</option><option>Funilaria</option><option>Mão de obra terceirizada</option><option>Aluguel</option><option>Energia</option><option>Água</option><option>Internet/telefone</option><option>Salários</option><option>Impostos</option><option>Ferramentas/equipamentos</option><option>Manutenção</option><option>Combustível/transporte</option><option>Outros</option></select></div>
+<div><label>Valor (R$) *</label><input id="gasto-valor" type="number" min="0.01" step="0.01" required></div>
+<div><label>Data *</label><input id="gasto-data" type="date" required></div>
+<div><label>Forma de pagamento</label><select id="gasto-pagamento"><option>Pix</option><option>Dinheiro</option><option>Cartão de débito</option><option>Cartão de crédito</option><option>Boleto</option><option>Transferência</option><option>A prazo / pendente</option></select></div>
+<div class="full"><label>Descrição / fornecedor</label><input id="gasto-desc" placeholder="Ex.: tinta prata, fornecedor..."></div>
+</div><div class="actions"><button class="btn" type="submit">Registrar gasto</button></div></form></div>
+<div class="section"><h3>Lançamentos registrados</h3><div id="lista-gastos"></div></div>
+</section>
+
+<section id="page-contas" class="hide">
+<h2>Contas a pagar e receber</h2>
+<div class="card"><h3>Cadastrar conta</h3><form id="accountForm"><div class="formgrid">
+<div><label>Tipo *</label><select id="conta-tipo"><option value="receber">A receber</option><option value="pagar">A pagar</option></select></div>
+<div><label>Descrição *</label><input id="conta-desc" required placeholder="Ex.: parcela do serviço / aluguel"></div>
+<div><label>Cliente / fornecedor</label><input id="conta-pessoa" placeholder="Nome"></div>
+<div><label>Serviço relacionado</label><select id="conta-servico"><option value="">Sem vínculo</option></select></div>
+<div><label>Valor (R$) *</label><input id="conta-valor" type="number" min="0.01" step="0.01" required></div>
+<div><label>Vencimento *</label><input id="conta-vencimento" type="date" required></div>
+<div><label>Status</label><select id="conta-status"><option value="Pendente">Pendente</option><option value="Pago/recebido">Pago/recebido</option></select></div>
+<div><label>Data de pagamento</label><input id="conta-pagamento-data" type="date"></div>
+</div><div class="actions"><button class="btn" type="submit">Salvar conta</button></div></form></div>
+<div class="section"><div class="grid">
+<div class="stat"><small>Total pendente a pagar</small><strong id="c-pagar" class="red">R$ 0,00</strong></div>
+<div class="stat"><small>Total pendente a receber</small><strong id="c-receber" class="green">R$ 0,00</strong></div>
+</div></div>
+<div class="section"><h3>Contas cadastradas</h3><div id="lista-contas"></div></div>
+</section>
+
+<section id="page-saques" class="hide">
+<h2>Saques e retiradas</h2>
+<div class="grid"><div class="stat"><small>Total de retiradas</small><strong id="saques-total" class="gold">R$ 0,00</strong></div><div class="stat"><small>Quantidade de saques</small><strong id="saques-qtd">0</strong></div></div>
+<div class="section card"><h3>Registrar saque / retirada</h3><form id="saqueForm"><div class="formgrid">
+<div><label>Valor do saque (R$) *</label><input id="saque-valor" type="number" min="0.01" step="0.01" required></div>
+<div><label>Data *</label><input id="saque-data" type="date" required></div>
+<div><label>Forma de retirada</label><select id="saque-forma"><option>Dinheiro</option><option>Pix</option><option>Transferência</option><option>Outro</option></select></div>
+<div><label>Responsável</label><input id="saque-responsavel" placeholder="Proprietário"></div>
+<div class="full"><label>Descrição / motivo *</label><input id="saque-desc" required placeholder="Ex.: retirada pessoal"></div>
+</div><div class="actions"><button class="btn" type="submit">Salvar saque</button></div></form></div>
+<div class="section"><h3>Histórico de saques</h3><div id="lista-saques"></div></div>
+<div class="section notice">As retiradas ficam separadas das despesas operacionais.</div>
+</section>
+
+<section id="page-relatorios" class="hide">
+<h2>Relatórios</h2><div class="card"><h3>Resumo por período</h3>
+<div class="formgrid"><div><label>De</label><input type="date" id="rel-de"></div><div><label>Até</label><input type="date" id="rel-ate"></div></div>
+<div class="actions"><button class="btn" id="gerar-relatorio">Gerar resumo</button></div><div id="relatorio"></div></div>
+<div class="section card"><h3>Resultado por serviço</h3><div id="rel-servicos"></div></div>
+</section>
+
+<section id="page-backup" class="hide">
+<h2>Backup e dados</h2><div class="card"><h3>Proteja os dados da oficina</h3><p class="muted">Exporte um arquivo JSON para guardar uma cópia. Para restaurar, selecione um backup exportado anteriormente. A importação substitui os dados atuais deste navegador.</p>
+<div class="actions"><button class="btn" id="exportar">Exportar backup</button></div>
+<label>Restaurar backup (.json)</label><input type="file" id="importar-arquivo" accept="application/json">
+<div class="actions"><button class="btn danger" id="limpar-dados">Apagar todos os dados</button></div>
+</div><div class="section notice"><b>Importante:</b> esta versão inicial não possui login online nem sincronização. Qualquer pessoa com acesso desbloqueado ao navegador pode visualizar os dados. Para uso comercial contínuo, a próxima etapa recomendada é adicionar autenticação e banco de dados na nuvem.</div>
+</section>
+</main>
+<div class="bottom"><button class="btn" id="atalho-novo">+ Cadastrar serviço</button></div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script>
+const firebaseConfig = {apiKey:"AIzaSyCA_o8JQqAfIqikcisediUg_z4WuzWda8s",authDomain:"o-bigode-funileiro.firebaseapp.com",projectId:"o-bigode-funileiro",storageBucket:"o-bigode-funileiro.firebasestorage.app",messagingSenderId:"869844493959",appId:"1:869844493959:web:8281a41b99bad4b321fa22",measurementId:"G-YFSWWN8N1T"};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const authScreen=document.getElementById("auth-screen"), appShell=document.getElementById("app-shell"), loginPanel=document.getElementById("auth-login-panel"), resetPanel=document.getElementById("auth-reset-panel"), authError=document.getElementById("auth-error"), authSuccess=document.getElementById("auth-success");
+function authMessage(error="",success=""){authError.textContent=error;authError.style.display=error?"block":"none";authSuccess.textContent=success;authSuccess.style.display=success?"block":"none"}
+document.getElementById("auth-forgot").onclick=()=>{loginPanel.classList.add("hide");resetPanel.classList.remove("hide");document.getElementById("auth-reset-email").value=document.getElementById("auth-email").value;authMessage()};
+document.getElementById("auth-back-login").onclick=()=>{resetPanel.classList.add("hide");loginPanel.classList.remove("hide");authMessage()};
+document.getElementById("auth-login-form").addEventListener("submit",async e=>{e.preventDefault();authMessage();const email=document.getElementById("auth-email").value.trim(),password=document.getElementById("auth-password").value;try{await auth.signInWithEmailAndPassword(email,password)}catch(err){let m={"auth/invalid-email":"Confira o formato do e-mail.","auth/invalid-credential":"E-mail ou senha incorretos.","auth/user-not-found":"Usuário não encontrado. Cadastre o usuário no Firebase Console.","auth/too-many-requests":"Muitas tentativas. Aguarde um pouco e tente novamente.","auth/network-request-failed":"Falha de conexão. Verifique a internet."};authMessage(m[err.code]||"Não foi possível entrar. Verifique o usuário, a senha e a configuração do Firebase.")}});
+document.getElementById("auth-reset-form").addEventListener("submit",async e=>{e.preventDefault();authMessage();const email=document.getElementById("auth-reset-email").value.trim();try{await auth.sendPasswordResetEmail(email);authMessage("","Se o endereço estiver cadastrado, o Firebase enviará um e-mail com o link para redefinir a senha. Confira também o spam/lixo eletrônico.")}catch(err){let m={"auth/invalid-email":"Confira o formato do e-mail.","auth/user-not-found":"Não foi possível localizar esse usuário. Confira o e-mail cadastrado no Firebase.","auth/too-many-requests":"Muitas tentativas. Aguarde antes de tentar novamente.","auth/network-request-failed":"Falha de conexão. Verifique a internet."};authMessage(m[err.code]||"Não foi possível solicitar a recuperação. Confira a configuração do Firebase Authentication.")}});
+auth.onAuthStateChanged(user=>{if(user){authScreen.classList.add("hide");appShell.classList.remove("hide");if(!document.getElementById("btn-sair")){const b=document.createElement("button");b.id="btn-sair";b.className="btn secondary small";b.textContent="Sair";b.style.marginLeft="auto";b.onclick=()=>auth.signOut();document.querySelector("header").appendChild(b)}}else{appShell.classList.add("hide");authScreen.classList.remove("hide")}});
+
+const KEY='bigode_funileiro_v1_data';
+const today=()=>new Date().toISOString().slice(0,10);
+const brl=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+let db=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{services:[],expenses:[],accounts:[]}}catch(e){return {services:[],expenses:[],accounts:[]}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function serviceName(id){const s=db.services.find(x=>x.id===id);return s?`${s.veiculo} · ${s.placa||s.cliente}`:'Sem vínculo'}
+function expensesFor(id){return db.expenses.filter(e=>e.kind==='direto'&&e.serviceId===id).reduce((a,e)=>a+Number(e.amount),0)}
+function setPage(p){document.querySelectorAll('main section').forEach(s=>s.classList.add('hide'));document.getElementById('page-'+p).classList.remove('hide');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));document.getElementById('atalho-novo').classList.toggle('hide',p!=='servicos');window.scrollTo(0,0)}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>setPage(b.dataset.page)));
+function serviceFormOpen(s=null){document.getElementById('form-servico').classList.remove('hide');document.getElementById('servico-form-title').textContent=s?'Editar serviço':'Cadastrar serviço';document.getElementById('service-id').value=s?.id||'';['cliente','telefone','veiculo','placa','entrada','entrega','valor','status','descricao'].forEach(k=>document.getElementById(k).value=s?.[k]??(k==='entrada'?today():k==='status'?'Orçamento':''));document.getElementById('form-servico').scrollIntoView({behavior:'smooth',block:'start'})}
+document.getElementById('novo-servico').onclick=()=>serviceFormOpen();
+document.getElementById('atalho-novo').onclick=()=>{setPage('servicos');serviceFormOpen()};
+document.getElementById('cancelar-servico').onclick=()=>document.getElementById('form-servico').classList.add('hide');
+document.getElementById('serviceForm').onsubmit=e=>{e.preventDefault();let id=document.getElementById('service-id').value;let s={id:id||uid()};['cliente','telefone','veiculo','placa','entrada','entrega','valor','status','descricao'].forEach(k=>s[k]=document.getElementById(k).value);s.valor=Number(s.valor);if(id)db.services=db.services.map(x=>x.id===id?s:x);else db.services.unshift(s);document.getElementById('form-servico').classList.add('hide');e.target.reset();save();};
+function deleteItem(type,id){if(!confirm('Tem certeza que deseja excluir este registro?'))return;db[type]=db[type].filter(x=>x.id!==id);save()}
+function renderServices(){let q=(document.getElementById('busca-servicos').value||'').toLowerCase();let arr=db.services.filter(s=>[s.cliente,s.veiculo,s.placa].join(' ').toLowerCase().includes(q));let el=document.getElementById('lista-servicos');if(!arr.length){el.innerHTML='<div class="empty">Nenhum serviço cadastrado. Toque em “Novo serviço” para começar.</div>';return}el.innerHTML=arr.map(s=>{let cost=expensesFor(s.id),balance=Number(s.valor)-db.accounts.filter(a=>a.serviceId===s.id&&a.kind==='receber'&&a.status!=='Pago/recebido').reduce((a,x)=>a+Number(x.amount),0);return `<div class="card item"><div class="itemtop"><div><strong>${esc(s.veiculo)} ${s.placa?'· '+esc(s.placa):''}</strong><div class="muted">${esc(s.cliente)} ${s.telefone?'· '+esc(s.telefone):''}</div><span class="pill">${esc(s.status)}</span></div><div class="money gold">${brl(s.valor)}</div></div><p class="muted">${esc(s.descricao||'Sem descrição')}<br>Entrada: ${esc(s.entrada||'—')} · Entrega: ${esc(s.entrega||'não definida')}</p><div class="itemtop"><span class="muted">Gastos diretos: <b class="red">${brl(cost)}</b></span><span class="muted">Margem estimada: <b class="green">${brl(Number(s.valor)-cost)}</b></span></div><div class="subactions"><button class="btn secondary small" onclick="serviceFormOpen(db.services.find(x=>x.id==='${s.id}'))">Editar</button><button class="btn secondary small" onclick="quickExpense('${s.id}')">+ Gasto</button><button class="btn secondary small" onclick="quickAccount('${s.id}')">+ Recebimento</button><button class="btn danger small" onclick="deleteItem('services','${s.id}')">Excluir</button></div></div>`}).join('')}
+document.getElementById('busca-servicos').addEventListener('input',renderServices);
+function fillServiceSelects(){['gasto-servico','conta-servico'].forEach(id=>{let el=document.getElementById(id),old=el.value;el.innerHTML=(id==='conta-servico'?'<option value="">Sem vínculo</option>':'<option value="">Selecione se aplicável</option>')+db.services.map(s=>`<option value="${s.id}">${esc(s.veiculo)} · ${esc(s.cliente)}</option>`).join('');if([...el.options].some(o=>o.value===old))el.value=old})}
+function quickExpense(id){setPage('gastos');document.getElementById('tipo-gasto').value='direto';document.getElementById('gasto-servico').value=id;document.getElementById('gasto-data').value=today();document.getElementById('gasto-valor').focus()}
+function quickAccount(id){setPage('contas');document.getElementById('conta-tipo').value='receber';document.getElementById('conta-servico').value=id;document.getElementById('conta-desc').value='Recebimento do serviço - '+serviceName(id);document.getElementById('conta-vencimento').value=today();document.getElementById('conta-valor').focus()}
+document.getElementById('expenseForm').onsubmit=e=>{e.preventDefault();let kind=document.getElementById('tipo-gasto').value,serviceId=document.getElementById('gasto-servico').value;if(kind==='direto'&&!serviceId){alert('Selecione o serviço relacionado ao gasto direto.');return}db.expenses.unshift({id:uid(),kind,serviceId:kind==='direto'?serviceId:'',category:document.getElementById('categoria-gasto').value,amount:Number(document.getElementById('gasto-valor').value),date:document.getElementById('gasto-data').value||today(),payment:document.getElementById('gasto-pagamento').value,description:document.getElementById('gasto-desc').value});e.target.reset();document.getElementById('gasto-data').value=today();save()};
+function renderExpenses(){let el=document.getElementById('lista-gastos');if(!db.expenses.length){el.innerHTML='<div class="empty">Nenhum gasto registrado.</div>';return}el.innerHTML=db.expenses.map(x=>`<div class="card item"><div class="itemtop"><div><strong>${esc(x.category)}</strong><div class="muted">${esc(x.description||'Sem descrição')} · ${esc(x.date)}</div><span class="pill">${x.kind==='direto'?'Direto · '+esc(serviceName(x.serviceId)):x.kind==='saque'?'Saque / retirada':'Operacional'}</span></div><div class="money red">${brl(x.amount)}</div></div><div class="subactions"><button class="btn danger small" onclick="deleteItem('expenses','${x.id}')">Excluir</button></div></div>`).join('')}
+document.getElementById('saque-data').value=today();
+document.getElementById('saqueForm').onsubmit=e=>{e.preventDefault();db.expenses.unshift({id:uid(),kind:'saque',serviceId:'',category:'Saque / retirada do proprietário',amount:Number(document.getElementById('saque-valor').value),date:document.getElementById('saque-data').value||today(),payment:document.getElementById('saque-forma').value,description:document.getElementById('saque-desc').value+(document.getElementById('saque-responsavel').value?' · Responsável: '+document.getElementById('saque-responsavel').value:'')});e.target.reset();document.getElementById('saque-data').value=today();save();setPage('saques')};
+function renderSaques(){let arr=db.expenses.filter(x=>x.kind==='saque').sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('saques-total').textContent=brl(arr.reduce((t,x)=>t+Number(x.amount),0));document.getElementById('saques-qtd').textContent=arr.length;let el=document.getElementById('lista-saques');if(!arr.length){el.innerHTML='<div class="empty">Nenhum saque registrado ainda.</div>';return}el.innerHTML=arr.map(x=>`<div class="card item"><div class="itemtop"><div><strong>${esc(x.description||'Retirada do proprietário')}</strong><div class="muted">${esc(x.date)} · ${esc(x.payment||'')}</div></div><div class="money gold">${brl(x.amount)}</div></div><div class="subactions"><button class="btn danger small" onclick="deleteItem('expenses','${x.id}')">Excluir saque</button></div></div>`).join('')}
+document.getElementById('accountForm').onsubmit=e=>{e.preventDefault();db.accounts.unshift({id:uid(),kind:document.getElementById('conta-tipo').value,description:document.getElementById('conta-desc').value,person:document.getElementById('conta-pessoa').value,serviceId:document.getElementById('conta-servico').value,amount:Number(document.getElementById('conta-valor').value),due:document.getElementById('conta-vencimento').value,status:document.getElementById('conta-status').value,paidDate:document.getElementById('conta-pagamento-data').value});e.target.reset();save()};
+function renderAccounts(){let pendingPay=db.accounts.filter(a=>a.kind==='pagar'&&a.status!=='Pago/recebido').reduce((t,a)=>t+a.amount,0),pendingRec=db.accounts.filter(a=>a.kind==='receber'&&a.status!=='Pago/recebido').reduce((t,a)=>t+a.amount,0);document.getElementById('c-pagar').textContent=brl(pendingPay);document.getElementById('c-receber').textContent=brl(pendingRec);let el=document.getElementById('lista-contas');if(!db.accounts.length){el.innerHTML='<div class="empty">Nenhuma conta cadastrada.</div>';return}el.innerHTML=db.accounts.slice().sort((a,b)=>a.due.localeCompare(b.due)).map(a=>`<div class="card item"><div class="itemtop"><div><strong>${esc(a.description)}</strong><div class="muted">${esc(a.person||'')} ${a.person?'· ':''}Vencimento: ${esc(a.due)}</div><span class="pill">${a.kind==='pagar'?'A pagar':'A receber'} · ${esc(a.status)}</span>${a.serviceId?'<div class="muted">'+esc(serviceName(a.serviceId))+'</div>':''}</div><div class="money ${a.kind==='pagar'?'red':'green'}">${brl(a.amount)}</div></div><div class="subactions">${a.status!=='Pago/recebido'?`<button class="btn secondary small" onclick="markAccount('${a.id}')">Marcar pago/recebido</button>`:''}<button class="btn danger small" onclick="deleteItem('accounts','${a.id}')">Excluir</button></div></div>`).join('')}
+function markAccount(id){let a=db.accounts.find(x=>x.id===id);if(a){a.status='Pago/recebido';a.paidDate=today();save()}}
+function renderHome(){let active=db.services.filter(s=>!['Entregue','Cancelado'].includes(s.status));document.getElementById('s-andamento').textContent=active.length;document.getElementById('s-receita').textContent=brl(db.services.filter(s=>s.status!=='Cancelado').reduce((t,s)=>t+s.valor,0));document.getElementById('s-despesas').textContent=brl(db.expenses.filter(x=>x.kind!=='saque').reduce((t,x)=>t+x.amount,0));document.getElementById('s-saques').textContent=brl(db.expenses.filter(x=>x.kind==='saque').reduce((t,x)=>t+x.amount,0));document.getElementById('s-receber').textContent=brl(db.accounts.filter(a=>a.kind==='receber'&&a.status!=='Pago/recebido').reduce((t,a)=>t+a.amount,0));let direct=db.expenses.filter(x=>x.kind==='direto').reduce((t,x)=>t+x.amount,0);document.getElementById('s-resultado').textContent=brl(db.services.filter(s=>s.status!=='Cancelado').reduce((t,s)=>t+s.valor,0)-direct);let upcoming=db.accounts.filter(a=>a.status!=='Pago/recebido').sort((a,b)=>a.due.localeCompare(b.due)).slice(0,5);document.getElementById('home-vencimentos').innerHTML=upcoming.length?upcoming.map(a=>`<div class="itemtop item"><span>${esc(a.description)}<br><small>${esc(a.due)} · ${a.kind==='pagar'?'Pagar':'Receber'}</small></span><b class="${a.kind==='pagar'?'red':'green'}">${brl(a.amount)}</b></div>`).join(''):'Nenhuma conta pendente.'}
+function renderReport(){let de=document.getElementById('rel-de').value,ate=document.getElementById('rel-ate').value;let ex=db.expenses.filter(x=>(!de||x.date>=de)&&(!ate||x.date<=ate));let accounts=db.accounts.filter(a=>(!de||a.due>=de)&&(!ate||a.due<=ate));let rev=accounts.filter(a=>a.kind==='receber'&&a.status==='Pago/recebido').reduce((t,a)=>t+a.amount,0),pay=accounts.filter(a=>a.kind==='pagar'&&a.status==='Pago/recebido').reduce((t,a)=>t+a.amount,0),withdrawals=ex.filter(a=>a.kind==='saque').reduce((t,a)=>t+a.amount,0),expenses=ex.filter(a=>a.kind!=='saque').reduce((t,a)=>t+a.amount,0);document.getElementById('relatorio').innerHTML=`<div class="grid section"><div class="stat"><small>Despesas do período</small><strong class="red">${brl(expenses)}</strong></div><div class="stat"><small>Saques / retiradas</small><strong class="gold">${brl(withdrawals)}</strong></div><div class="stat"><small>Recebimentos registrados</small><strong class="green">${brl(rev)}</strong></div><div class="stat"><small>Contas pagas</small><strong>${brl(pay)}</strong></div><div class="stat"><small>Fluxo após retiradas</small><strong class="${rev-pay-withdrawals<0?'red':'green'}">${brl(rev-pay-withdrawals)}</strong></div></div><p class="muted">As despesas excluem saques/retiradas, exibidos separadamente; lançamentos são filtrados pela data e contas pagas/recebidas pelo vencimento. Para análise contábil oficial, confira os registros com o contador.</p>`;document.getElementById('rel-servicos').innerHTML=db.services.map(s=>`<div class="itemtop item"><span>${esc(s.veiculo)} · ${esc(s.cliente)}<br><small class="muted">${esc(s.status)}</small></span><span style="text-align:right"><b>${brl(s.valor)}</b><br><small class="${s.valor-expensesFor(s.id)<0?'red':'green'}">Margem: ${brl(s.valor-expensesFor(s.id))}</small></span></div>`).join('')||'<div class="empty">Nenhum serviço.</div>'}
+document.getElementById('gerar-relatorio').onclick=renderReport;
+document.getElementById('exportar').onclick=()=>{let blob=new Blob([JSON.stringify({app:'O Bigode Funileiro',version:1,exportedAt:new Date().toISOString(),data:db},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-bigode-funileiro-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)};
+document.getElementById('importar-arquivo').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let o=JSON.parse(await f.text());let next=o.data||o;if(!Array.isArray(next.services)||!Array.isArray(next.expenses)||!Array.isArray(next.accounts))throw Error();if(confirm('Restaurar backup? Os dados atuais serão substituídos.')){db=next;save();alert('Backup restaurado.')}}catch(err){alert('Arquivo inválido ou incompatível.')}e.target.value=''};
+document.getElementById('limpar-dados').onclick=()=>{if(confirm('Apagar TODOS os serviços, gastos e contas deste navegador? Esta ação não pode ser desfeita.')){db={services:[],expenses:[],accounts:[]};save()}};
+function renderAll(){fillServiceSelects();renderServices();renderExpenses();renderSaques();renderAccounts();renderHome();renderReport()}
+document.getElementById('entrada').value=today();document.getElementById('gasto-data').value=today();renderAll();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
