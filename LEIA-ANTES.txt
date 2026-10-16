@@ -1,0 +1,15 @@
+O BIGODE FUNILEIRO — VERSÃO 1.6
+
+Pacote corrigido para substituir os arquivos do repositório GitHub Pages existente.
+
+IMPORTANTE: os arquivos estão na RAIZ do ZIP, sem pasta externa. Envie/substitua estes arquivos na raiz do repositório onde já está o index.html:
+- index.html
+- manifest.webmanifest
+- sw.js
+- logo.jpeg
+- icon-192.png
+- icon-512.png
+
+O index.html e o manifest agora apontam para as imagens na raiz. O cache do service worker foi atualizado para v1.6.
+
+Após o commit, aguarde a publicação e abra o site com Ctrl+Shift+R. Se o aplicativo estiver instalado como PWA, remova o atalho antigo e instale novamente para atualizar o ícone.
