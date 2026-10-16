@@ -1,15 +1,18 @@
-# O Bigode Funileiro — Firebase Authentication
+# O Bigode Funileiro — versão 1.4
 
-Esta versão adiciona login por e-mail/senha e recuperação de senha por e-mail usando Firebase Authentication.
+## Identidade visual e layout
+- Usa o logotipo enviado pelo proprietário como logo do aplicativo e ícone PWA.
+- Tema preto e dourado.
+- Tela principal organizada em uma estrutura fixa: cabeçalho e barra inferior permanecem no lugar, e somente a área central rola, evitando a sensação de telas flutuantes.
+- Login por e-mail/senha e recuperação de senha via Firebase Authentication.
 
-## Antes de usar
-1. No Firebase Console, confirme Authentication > Método de login > E-mail/senha ativado.
-2. Em Authentication > Usuários, adicione o e-mail do proprietário com uma senha inicial.
-3. Em Authentication > Configurações, confira os domínios autorizados para o ambiente onde publicará o app (por exemplo, o domínio do Firebase Hosting).
-4. Publique por HTTPS. A autenticação não funciona corretamente ao abrir o arquivo diretamente como file://.
-5. Teste “Esqueci minha senha” e confira a caixa de entrada e spam.
+## Publicação
+1. Envie o conteúdo desta pasta para a raiz do repositório GitHub. O `index.html` deve ficar na raiz.
+2. Pode publicar pelo GitHub Pages em Settings > Pages > Deploy from a branch > main > /(root).
+3. No Firebase Console, Authentication > Settings/Configurações > Authorized domains, adicione o domínio exato do site publicado (por exemplo, `SEU-USUARIO.github.io`).
+4. Teste o login e o link de recuperação por e-mail.
 
-## Importante sobre os dados
-O login é autenticado pelo Firebase, mas os serviços, gastos, contas e saques continuam armazenados no localStorage do navegador/dispositivo. Esta versão ainda não sincroniza dados com Firestore e não transfere dados entre dispositivos. Faça backup antes de mudar de dispositivo ou limpar os dados do navegador.
+## Limitação importante
+A autenticação usa Firebase Authentication, mas serviços, gastos, contas e saques ainda são armazenados no localStorage do navegador. Não há sincronização em nuvem com Firestore nesta versão. Faça backup regularmente e não use como única cópia dos registros financeiros.
 
-A configuração web do Firebase está inserida no index.html. Não coloque credenciais de conta de serviço ou chaves privadas no navegador.
+A configuração web Firebase está no `index.html`. Não inclua credenciais de conta de serviço nem chaves privadas no navegador.
