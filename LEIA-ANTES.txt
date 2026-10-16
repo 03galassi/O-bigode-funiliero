@@ -1,15 +1,26 @@
-O BIGODE FUNILEIRO — VERSÃO 1.6
+O BIGODE FUNILEIRO — v1.7 FIRESTORE
 
-Pacote corrigido para substituir os arquivos do repositório GitHub Pages existente.
+Inclui sincronização dos registros financeiros via Firebase Firestore. Mantém logo/ícones na raiz do repositório e tema preto/dourado.
 
-IMPORTANTE: os arquivos estão na RAIZ do ZIP, sem pasta externa. Envie/substitua estes arquivos na raiz do repositório onde já está o index.html:
-- index.html
-- manifest.webmanifest
-- sw.js
-- logo.jpeg
-- icon-192.png
-- icon-512.png
+IMPORTANTE: a sincronização só funcionará depois de criar o Firestore Database no projeto Firebase e publicar as regras do arquivo firestore.rules.
 
-O index.html e o manifest agora apontam para as imagens na raiz. O cache do service worker foi atualizado para v1.6.
+CONFIGURAÇÃO NO FIREBASE
+1. Console Firebase > Criação e execução > Firestore Database > Criar banco de dados (modo produção).
+2. Abra a aba Regras e substitua o conteúdo pelas regras do arquivo firestore.rules; publique. Essas regras limitam a leitura/escrita ao UID autenticado correspondente ao próprio usuário.
+3. Authentication > E-mail/senha deve continuar habilitado. Não habilite cadastro público se não for necessário; cadastre o proprietário pelo Console.
+4. Envie TODOS os arquivos deste ZIP para a raiz do repositório GitHub Pages, substituindo os anteriores.
+5. Abra o site publicado, entre com o usuário do proprietário. No primeiro acesso, o aplicativo cria o documento na nuvem e migra os registros locais desse navegador se ainda não houver dados na nuvem.
 
-Após o commit, aguarde a publicação e abra o site com Ctrl+Shift+R. Se o aplicativo estiver instalado como PWA, remova o atalho antigo e instale novamente para atualizar o ícone.
+MIGRAÇÃO DE DADOS
+- Se já existe um documento na nuvem, os dados da nuvem passam a ser a fonte principal e substituem a cópia local no dispositivo que entrar.
+- Se ainda não existe documento na nuvem, os registros locais do primeiro navegador autenticado são enviados para a nuvem. Por isso, faça um backup antes de testar e entre primeiro no dispositivo que contém os dados corretos.
+- Evite usar simultaneamente o aplicativo em vários dispositivos durante a primeira migração.
+
+TESTE
+1. Entre no dispositivo que contém os registros atuais. Aguarde o status "Sincronizado com Firebase".
+2. Cadastre um registro de teste e confirme que o status atualiza.
+3. Abra em outro dispositivo/navegador e entre com o mesmo usuário. Confirme que o registro aparece.
+4. Exclua o registro de teste.
+
+OBSERVAÇÃO
+A configuração web Firebase está no index.html. A apiKey do Firebase Web é identificador público do projeto, não uma chave de conta de serviço. Nunca coloque chaves privadas de conta de serviço no navegador.

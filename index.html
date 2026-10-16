@@ -65,7 +65,7 @@ label{display:block;font-size:12px;color:#d3c7ad;margin:10px 0 5px}input,select,
 </div>
 <div class="section card"><h3>Visão financeira</h3><div class="itemtop"><span class="muted">Resultado dos serviços antes dos custos fixos</span><strong id="s-resultado" class="gold">R$ 0,00</strong></div><p class="muted">Estimativa: valores contratados menos gastos diretos registrados. O lucro líquido depende também das despesas operacionais e dos pagamentos efetivamente realizados.</p></div>
 <div class="section card"><h3>Próximos vencimentos</h3><div id="home-vencimentos" class="muted">Nenhuma conta cadastrada.</div></div>
-<div class="section notice">Versão inicial: os dados ficam salvos neste navegador/dispositivo. Use a área <b>Backup</b> para exportar uma cópia regularmente. O acesso agora exige autenticação Firebase. Os dados operacionais continuam salvos localmente neste navegador; ainda não há sincronização na nuvem entre dispositivos.</div>
+<div class="section notice">Os dados são sincronizados com o Firebase Firestore para permitir acesso em dispositivos autorizados. O backup local continua disponível; exporte cópias regularmente.</div>
 </section>
 
 <section id="page-servicos" class="hide">
@@ -150,32 +150,53 @@ label{display:block;font-size:12px;color:#d3c7ad;margin:10px 0 5px}input,select,
 <div class="actions"><button class="btn" id="exportar">Exportar backup</button></div>
 <label>Restaurar backup (.json)</label><input type="file" id="importar-arquivo" accept="application/json">
 <div class="actions"><button class="btn danger" id="limpar-dados">Apagar todos os dados</button></div>
-</div><div class="section notice"><b>Importante:</b> o acesso ao aplicativo usa Firebase Authentication. Os registros financeiros ainda ficam neste navegador e não sincronizam entre dispositivos. Faça backups regulares.</div>
+</div><div class="section notice"><b>Sincronização:</b> os dados são salvos neste dispositivo e sincronizados com o Firebase quando a conexão está disponível. Faça backups regulares. <div id="sync-status" style="margin-top:8px;font-weight:700">Aguardando autenticação...</div></div>
 </section>
 </main>
 <div class="bottom"><button class="btn" id="atalho-novo">+ Cadastrar serviço</button></div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {apiKey:"AIzaSyCA_o8JQqAfIqikcisediUg_z4WuzWda8s",authDomain:"o-bigode-funileiro.firebaseapp.com",projectId:"o-bigode-funileiro",storageBucket:"o-bigode-funileiro.firebasestorage.app",messagingSenderId:"869844493959",appId:"1:869844493959:web:8281a41b99bad4b321fa22",measurementId:"G-YFSWWN8N1T"};
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const cloud = firebase.firestore();
+let currentUser = null;
+let cloudReady = false;
+let saveQueue = Promise.resolve();
+function syncStatus(msg, bad=false){const el=document.getElementById("sync-status");if(el){el.textContent=msg;el.style.color=bad?"#ff9999":"#ffe0a0"}}
 const authScreen=document.getElementById("auth-screen"), appShell=document.getElementById("app-shell"), loginPanel=document.getElementById("auth-login-panel"), resetPanel=document.getElementById("auth-reset-panel"), authError=document.getElementById("auth-error"), authSuccess=document.getElementById("auth-success");
 function authMessage(error="",success=""){authError.textContent=error;authError.style.display=error?"block":"none";authSuccess.textContent=success;authSuccess.style.display=success?"block":"none"}
 document.getElementById("auth-forgot").onclick=()=>{loginPanel.classList.add("hide");resetPanel.classList.remove("hide");document.getElementById("auth-reset-email").value=document.getElementById("auth-email").value;authMessage()};
 document.getElementById("auth-back-login").onclick=()=>{resetPanel.classList.add("hide");loginPanel.classList.remove("hide");authMessage()};
 document.getElementById("auth-login-form").addEventListener("submit",async e=>{e.preventDefault();authMessage();const email=document.getElementById("auth-email").value.trim(),password=document.getElementById("auth-password").value;try{await auth.signInWithEmailAndPassword(email,password)}catch(err){let m={"auth/invalid-email":"Confira o formato do e-mail.","auth/invalid-credential":"E-mail ou senha incorretos.","auth/user-not-found":"Usuário não encontrado. Cadastre o usuário no Firebase Console.","auth/too-many-requests":"Muitas tentativas. Aguarde um pouco e tente novamente.","auth/network-request-failed":"Falha de conexão. Verifique a internet."};authMessage(m[err.code]||"Não foi possível entrar. Verifique o usuário, a senha e a configuração do Firebase.")}});
 document.getElementById("auth-reset-form").addEventListener("submit",async e=>{e.preventDefault();authMessage();const email=document.getElementById("auth-reset-email").value.trim();try{await auth.sendPasswordResetEmail(email);authMessage("","Se o endereço estiver cadastrado, o Firebase enviará um e-mail com o link para redefinir a senha. Confira também o spam/lixo eletrônico.")}catch(err){let m={"auth/invalid-email":"Confira o formato do e-mail.","auth/user-not-found":"Não foi possível localizar esse usuário. Confira o e-mail cadastrado no Firebase.","auth/too-many-requests":"Muitas tentativas. Aguarde antes de tentar novamente.","auth/network-request-failed":"Falha de conexão. Verifique a internet."};authMessage(m[err.code]||"Não foi possível solicitar a recuperação. Confira a configuração do Firebase Authentication.")}});
-auth.onAuthStateChanged(user=>{if(user){authScreen.classList.add("hide");appShell.classList.remove("hide");if(!document.getElementById("btn-sair")){const b=document.createElement("button");b.id="btn-sair";b.className="btn secondary small";b.textContent="Sair";b.style.marginLeft="auto";b.onclick=()=>auth.signOut();document.querySelector("header").appendChild(b)}}else{appShell.classList.add("hide");authScreen.classList.remove("hide")}});
+auth.onAuthStateChanged(async user=>{currentUser=user||null;cloudReady=false;if(user){authScreen.classList.add("hide");appShell.classList.remove("hide");if(!document.getElementById("btn-sair")){const b=document.createElement("button");b.id="btn-sair";b.className="btn secondary small";b.textContent="Sair";b.style.marginLeft="auto";b.onclick=()=>auth.signOut();document.querySelector("header").appendChild(b)}syncStatus("Conectando ao banco de dados na nuvem...");try{await loadCloudData();cloudReady=true;syncStatus("Sincronizado com Firebase • "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));renderAll()}catch(err){console.error(err);syncStatus("Falha na sincronização. Confira se o Firestore foi criado e as regras instaladas.",true);alert("Não foi possível acessar o banco de dados na nuvem. Confira a configuração do Firestore e suas regras. Seus dados locais foram preservados.")}}else{cloudReady=false;appShell.classList.add("hide");authScreen.classList.remove("hide");syncStatus("Entre para sincronizar seus dados.")}});
 
 const KEY='bigode_funileiro_v1_data';
 const today=()=>new Date().toISOString().slice(0,10);
 const brl=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 let db=load();
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||{services:[],expenses:[],accounts:[]}}catch(e){return {services:[],expenses:[],accounts:[]}}}
-function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
+function emptyData(){return {services:[],expenses:[],accounts:[]}}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||emptyData()}catch(e){return emptyData()}}
+function hasRecords(data){return !!(data && ((data.services||[]).length||(data.expenses||[]).length||(data.accounts||[]).length))}
+async function loadCloudData(){
+  if(!currentUser) return;
+  const ref=cloud.collection("users").doc(currentUser.uid).collection("appData").doc("finance");
+  const snap=await ref.get();
+  const local=load();
+  if(snap.exists){const remote=snap.data();db={services:Array.isArray(remote.services)?remote.services:[],expenses:Array.isArray(remote.expenses)?remote.expenses:[],accounts:Array.isArray(remote.accounts)?remote.accounts:[]};localStorage.setItem(KEY,JSON.stringify(db));}
+  else {
+    // First login on this account: preserve existing browser data by migrating it to the cloud.
+    db={services:Array.isArray(local.services)?local.services:[],expenses:Array.isArray(local.expenses)?local.expenses:[],accounts:Array.isArray(local.accounts)?local.accounts:[]};
+    await ref.set({...db,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),ownerEmail:currentUser.email||""});
+    localStorage.setItem(KEY,JSON.stringify(db));
+  }
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll();if(currentUser&&cloudReady){const payload={services:db.services,expenses:db.expenses,accounts:db.accounts,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),ownerEmail:currentUser.email||""};saveQueue=saveQueue.then(()=>cloud.collection("users").doc(currentUser.uid).collection("appData").doc("finance").set(payload)).then(()=>syncStatus("Sincronizado com Firebase • "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}))).catch(err=>{console.error(err);syncStatus("Erro ao sincronizar. Os dados continuam neste dispositivo; faça backup.",true)});}}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function serviceName(id){const s=db.services.find(x=>x.id===id);return s?`${s.veiculo} · ${s.placa||s.cliente}`:'Sem vínculo'}
 function expensesFor(id){return db.expenses.filter(e=>e.kind==='direto'&&e.serviceId===id).reduce((a,e)=>a+Number(e.amount),0)}
