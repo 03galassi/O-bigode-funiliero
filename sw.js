@@ -1,4 +1,4 @@
-const CACHE='bigode-funileiro-v1-4';
+const CACHE='bigode-funileiro-v1-5';
 const FILES=['./','./index.html','./manifest.webmanifest','./assets/logo.jpeg','./assets/icon-192.png','./assets/icon-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
